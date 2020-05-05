@@ -1,0 +1,28 @@
+.Toolbar {
+    height: 56px;
+    width: 100%;
+    position: fixed; /* so it doesn't scroll with page*/
+    top: 0;
+    left: 0; /* top and left*/
+    background-color: #bf3813;
+    display: flex; /* alligns elements next to each other (default is row)*/
+    justify-content: space-between; /* fills out the toolbar so there is space between (has to be with display flex) */
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 90;  /* has to be lower than the backdrop (imagine it as a stack) */
+}
+
+.Toolbar nav {
+    height: 100%;
+}
+
+.Logo {
+    height: 80%;
+}
+
+@media (max-width:  499px) {
+    .DesktopOnly {
+        display: none;
+    }
+}
