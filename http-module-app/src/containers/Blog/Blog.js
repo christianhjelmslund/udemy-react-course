@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Suspense} from 'react';
 import Posts from "./Posts/Posts"
 // import FullPost from "./FullPost/FullPost"
 import {
@@ -8,8 +8,20 @@ import {
     Redirect// NavLink helps to know which is
 } from "react-router-dom"
 // the active link right now, so we can style that. /*Link,*/
-import NewPost from './NewPost/NewPost';
+// whatever comes" between the parantheses is only imported, when the function is executed.
 import './Blog.css';
+
+// just as normal:
+
+// import NewPost from './NewPost/NewPost';
+
+// way 1
+import asyncComponent from "../../hoc/asyncComponent";
+// const AsyncNewPost = asyncComponent(() => import("./NewPost/NewPost"))
+
+// way 2 (only React 16.6)
+const NewPost = React.lazy(() => import("./NewPost/NewPost"))
+
 
 class Blog extends Component {
 
@@ -42,9 +54,12 @@ class Blog extends Component {
                     </nav>
                 </header>
                 <Switch>
-                    <Route path={"/new-post"} component={NewPost}/>
+                    <Route path={"/new-post"} render={() => <Suspense fallback={
+                        <div>Loading...</div> /* could be a spinner here too for example*/}>
+                        <NewPost/> </Suspense>}/>
                     <Route path={"/posts"} component={Posts}/>
-                    <Redirect from= {"/"} to={"/posts"}/>
+                    <Redirect from={"/"} to={"/posts"}/>
+                    {/*<Route render={() => <h1>Not Found</h1>}></Route>*/}
                 </Switch>
             </div>
             // order is super important,
