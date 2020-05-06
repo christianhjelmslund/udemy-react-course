@@ -17,7 +17,6 @@ class Layout extends React.Component {
     }
 
     sideDrawerOpenHandler = () => {
-        console.log("clicked")
         this.setState({
             showSideDrawer: true
         })

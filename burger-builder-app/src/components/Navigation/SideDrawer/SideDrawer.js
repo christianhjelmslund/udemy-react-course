@@ -6,7 +6,6 @@ import Backdrop from "../../UI/Backdrop"
 
 const sideDrawer = (props) => {
     const attachedClasses = props.open ? styles.Open : styles.Close
-    console.log(props.open)
     return (
         <React.Fragment>
             <Backdrop show={props.open} clicked={props.closed}/>

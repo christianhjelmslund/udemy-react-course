@@ -1,10 +1,11 @@
 import React, {Component} from "react";
+import axios from "../axios"
+
 import Burger from "../components/Burger/Burger"
 import BuildControls from "../components/Burger/BuildControls/BuildControls"
 import Modal from "../components/UI/Modal"
 import OrderSummary from "../components/OrderSummary/OrderSummary"
 import Spinner from "../components/UI/Spinner/Spinner"
-import axios from "../axios"
 import withErrorHandler from "../hoc/withErrorHandler";
 
 
@@ -55,24 +56,19 @@ class BurgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         this.setState({loading: true})
-        axios.post('/orders.json', {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Christian Hjelmslund',
-                address: {
-                    street: "Test Street",
-                    zipCode: "2400",
-                    country: "Denmark"
-                },
-                email: "test@test.com"
-            }
-        }).then(response =>
-            this.setState({loading: false, purchasing: false}))
-            .catch(error =>
-                this.setState({loading: false, purchasing: false})
-            ) //.json is firebase specific
 
+        const queryParams = []
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]))
+        }
+        queryParams.push("price="+this.state.totalPrice)
+        const queryString = queryParams.join("&")
+
+
+        this.props.history.push({
+            pathname: "/checkout/",
+            search: '?' + queryString
+        });
     }
 
     addIngredientHandler = (type) => {
