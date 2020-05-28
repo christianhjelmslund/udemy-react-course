@@ -1,24 +1,21 @@
-import * as actionTypes from "../actions"
+import * as actionTypes from "../actions/actionTypes"
+import {updateObject} from "../utility"
 
 const initialState = {
     result: []
 }
 
 const resultsReducer = (oldState = initialState, action) => {
-    let newState = {...oldState}
     switch (action.type) {
         case actionTypes.STORE_RESULT:
-            newState.result = newState.result.concat({id: new Date(), value: action.counter}) // good practice because we create a new object
-            break
+            return updateObject(oldState, {result: oldState.result.concat({id: new Date(), value: action.counter})})
         case actionTypes.DELETE_RESULT:
-            newState.result = newState.result.filter(element => element.id !== action.id)
-            break
+            return updateObject(oldState, {result: oldState.result.filter(element => element.id !== action.id)})
         default:
-            return newState
+            break
     }
-    console.log(newState.result)
-    console.log(oldState.result)
-    return newState
+    return oldState
 }
+
 
 export default resultsReducer
