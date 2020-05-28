@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Route} from "react-router-dom";
+import {connect} from "react-redux"
 
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
@@ -7,27 +8,22 @@ import Spinner from "../../components/UI/Spinner/Spinner"
 
 class Checkout extends Component {
 
-    state = {
-        ingredients: null,
-        totalPrice: 0
-    }
-
-    componentDidMount() {
-        const query = new URLSearchParams(this.props.location.search)
-        const ingredients = {}
-        let price = 0
-        for (let param of query.entries()) {
-            if (param[0] === 'price') {
-                price = param[1]
-            } else {
-                ingredients[param[0]] = +param[1]
-            }
-        }
-        this.setState({
-            ingredients: ingredients,
-            totalPrice: price
-        })
-    }
+    // componentDidMount() {
+    //     const query = new URLSearchParams(this.props.location.search)
+    //     const ingredients = {}
+    //     let price = 0
+    //     for (let param of query.entries()) {
+    //         if (param[0] === 'price') {
+    //             price = param[1]
+    //         } else {
+    //             ingredients[param[0]] = +param[1]
+    //         }
+    //     }
+    //     this.setState({
+    //         ingredients: ingredients,
+    //         totalPrice: price
+    //     })
+    // }
 
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
@@ -39,18 +35,24 @@ class Checkout extends Component {
 
     render() {
         return (
-            this.state.ingredients ?
-            <div>
-                <CheckoutSummary ingredients={this.state.ingredients}
-                                 checkoutContinued={this.checkoutContinuedHandler}
-                                 checkoutCancelled={this.checkoutCancelledHandler}>
-                </CheckoutSummary>
-                <Route path={this.props.match.url + "/contact-data"} exact
-                       render={() => (<ContactData ingredients={this.state.ingredients} price={this.state.totalPrice} {...this.props}/>)}/>
-            </div> : <Spinner/>
+            this.props.ingredients ?
+                <div>
+                    <CheckoutSummary ingredients={this.props.ingredients}
+                                     checkoutContinued={this.checkoutContinuedHandler}
+                                     checkoutCancelled={this.checkoutCancelledHandler}>
+                    </CheckoutSummary>
+                    <Route path={this.props.match.url + "/contact-data"} exact
+                           component={ContactData}/>
+                </div> : <Spinner/>
 
         )
     }
 }
 
-export default Checkout
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients
+    }
+}
+
+export default connect(mapStateToProps)(Checkout)

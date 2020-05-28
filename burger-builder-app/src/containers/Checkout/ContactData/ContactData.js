@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import axios from "../../../axios"
+import {connect} from "react-redux"
 
 import SpecialButton from "../../../components/UI/Button/Button"
 import Input from "../../../components/UI/Input/Input"
@@ -58,7 +59,7 @@ class ContactData extends Component {
 
         axios.post('/orders.json', {
             ingredients: this.props.ingredients,
-            price: this.props.price,
+            price: this.props.totalPrice,
             orderData: formData
         }).then(response => {
             console.log("sent reponse in ContactData: " + response.status)
@@ -130,4 +131,12 @@ class ContactData extends Component {
     }
 }
 
-export default ContactData
+
+const mapStateToProps = state => {
+    return {
+        ingredients: state.ingredients,
+        totalPrice: state.totalPrice
+    }
+}
+
+export default connect(mapStateToProps)(ContactData)

@@ -3,9 +3,11 @@ import styles from "./Burger.module.css";
 import Ingredient from "./Ingredient";
 
 const burger = (props) => {
+    console.log(props.ingredients)
     let transformedIngredients = Object.keys(props.ingredients).map(
         (ingredientKey) => {
             const times = props.ingredients[ingredientKey];
+            // if (times === 0) return
             return [...Array(times)].map((_, i) => {
                 return <Ingredient key={ingredientKey + i} type={ingredientKey}/>;
             });
