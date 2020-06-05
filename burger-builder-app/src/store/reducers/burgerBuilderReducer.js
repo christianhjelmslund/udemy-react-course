@@ -1,4 +1,5 @@
 import * as actionTypes from "../actions/actionsTypes"
+import {updateObject} from "../utility"
 
 const initialState = {
     ingredients: null,
@@ -15,35 +16,37 @@ const INGREDIENT_PRICE = {
 
 const burgerBuilderReducer = (oldState = initialState, action) => {
 
+
     switch (action.type) {
-        case actionTypes.ADD_INGREDIENT:
-            return {
-                ...oldState,
-                ingredients: {
-                    ...oldState.ingredients,
-                    [action.ingredient]: oldState.ingredients[action.ingredient] + 1
-                },
+        case actionTypes.ADD_INGREDIENT: {
+            const updatedIngredients = updateObject(oldState.ingredients,
+                {[action.ingredient]: oldState.ingredients[action.ingredient] + 1})
+            const updatedState = {
+                ingredients: updatedIngredients,
                 totalPrice: oldState.totalPrice + INGREDIENT_PRICE[action.ingredient]
-            }
-        case actionTypes.REMOVE_INGREDIENT:
-            return {
-                ...oldState,
-                ingredients: {
-                    ...oldState.ingredients,
-                    [action.ingredient]: oldState.ingredients[action.ingredient] - 1
-                },
+            };
+            return updateObject(oldState, updatedState)
+        }
+        case actionTypes.REMOVE_INGREDIENT: {
+            const updatedIngredients = updateObject(oldState.ingredients,
+                {[action.ingredient]: oldState.ingredients[action.ingredient] - 1})
+            const updatedState = {
+                ingredients: updatedIngredients,
                 totalPrice: oldState.totalPrice - INGREDIENT_PRICE[action.ingredient]
-            }
+            };
+            return updateObject(oldState, updatedState)
+        }
         case actionTypes.SET_INGREDIENTS:
-            console.log("setting ingredients")
-            return {...oldState, ingredients: action.ingredients, error: false}
+            return updateObject(oldState, {
+                ingredients: action.ingredients,
+                error: false,
+                totalPrice: 4
+            })
         case actionTypes.SET_ERROR:
-            console.log("no?")
-            return {...oldState, error: true}
+            return updateObject(oldState, {error: true})
         default:
-            console.log("default case in burgerBuilderReducer")
+            return oldState
     }
-    return oldState
 }
 
 export default burgerBuilderReducer

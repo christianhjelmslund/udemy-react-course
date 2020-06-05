@@ -4,6 +4,8 @@ import {connect} from "react-redux"
 
 import SpecialButton from "../../../components/UI/Button/Button"
 import Input from "../../../components/UI/Input/Input"
+import withErrorHandler from "../../../hoc/withErrorHandler";
+import * as actions from "../../../store/actions/actions"
 
 import styles from "./ContactData.module.css"
 
@@ -25,13 +27,12 @@ class ContactData extends Component {
                             {value: "cheapest", displayValue: "Cheapest"},
                         ]
                     },
-                    value: "",
+                    value: "fastest",
                     validation: {},
                     valid: true
                 },
             },
             formIsValid: false,
-            loading: false
         }
     }
 
@@ -51,24 +52,16 @@ class ContactData extends Component {
 
     orderHandler = (event) => {
         event.preventDefault()
-        this.setState({loading: true})
         const formData = {}
         for (let formElementId in this.state.orderForm) {
             formData[formElementId] = this.state.orderForm[formElementId].value
         }
-
-        axios.post('/orders.json', {
+        const order = {
             ingredients: this.props.ingredients,
-            price: this.props.totalPrice,
+            price: this.props.price,
             orderData: formData
-        }).then(response => {
-            console.log("sent reponse in ContactData: " + response.status)
-            this.setState({loading: false})
-            this.props.history.push("/")
-        }).catch(error => {
-            console.log(error)
-            this.setState({loading: false})
-        }) //.json is firebase specific
+        }
+        this.props.onOrderBurger(order)
     }
 
     checkValidity = (value, rules) => {
@@ -108,7 +101,6 @@ class ContactData extends Component {
                 {id: key, config: this.state.orderForm[key]}
             )
         }
-        console.log(this.state.formIsValid)
         return (
             <div className={styles.ContactData}>
                 <h4>Enter your Contact Data</h4>
@@ -134,9 +126,16 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice
+        ingredients: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        loading: state.order.loading
     }
 }
 
-export default connect(mapStateToProps)(ContactData)
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrderBurger: (formData) => dispatch(actions.purchaseBurger(formData))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios))

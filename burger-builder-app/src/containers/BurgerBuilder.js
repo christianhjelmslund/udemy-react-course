@@ -19,14 +19,6 @@ class BurgerBuilder extends Component {
     componentDidMount() {
         this.props.onInitIngredients()
     }
-    //     axios.get("/ingredients.json").then(response =>
-    //         this.setState({ingredients: response.data}
-    //         )
-    //     ).catch(error => {
-    //         console.log(error)
-    //         this.setState({error: true})
-    //     })
-    // }
 
     updatePurchasable(ingredients) {
         return (Object.values(ingredients).reduce((acc, element) => acc + element, 0) > 0)
@@ -42,6 +34,7 @@ class BurgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         this.setState({loading: true})
+        this.props.onInitPurchase()
         this.props.history.push("/checkout/");
         // QUERY PARAMETERS: just keeping the code for future reference - however with redux it
         // is not needed anymore
@@ -99,7 +92,6 @@ class BurgerBuilder extends Component {
 
         let orderSummary = null;
 
-        console.log(this.props.error)
         let burger = this.props.error ? <p> Ingredients can't be loaded </p> : <Spinner/>
         if (this.props.ingredients !== null) {
             burger = (<React.Fragment>
@@ -139,9 +131,9 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
     return {
-        ingredients: state.ingredients,
-        totalPrice: state.totalPrice,
-        error: state.error
+        ingredients: state.burgerBuilder.ingredients,
+        totalPrice: state.burgerBuilder.totalPrice,
+        error: state.burgerBuilder.error
     }
 }
 
@@ -149,7 +141,8 @@ const mapDispatchToProps = dispatch => {
     return {
         onAddIngredient: (ingredient) => dispatch(actions.addIngredient(ingredient)),
         onRemoveIngredient: (ingredient) => dispatch(actions.removeIngredient(ingredient)),
-        onInitIngredients: () => dispatch(actions.initIngredients())
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onInitPurchase: () => dispatch(actions.purchaseBurgerInit())
     }
 }
 
