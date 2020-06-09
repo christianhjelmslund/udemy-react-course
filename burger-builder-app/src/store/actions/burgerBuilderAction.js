@@ -32,7 +32,7 @@ export const initIngredients = () => {
                 dispatch(setIngredients(response.data))
             }
         ).catch(error => {
-            dispatch(fetchIngredientsFailed())
+            dispatch(fetchIngredientsFailed(error))
         })
     }
 }

@@ -25,7 +25,13 @@ class BurgerBuilder extends Component {
     }
 
     purchaseHandler = () => {
-        this.setState({purchasing: true})
+        if (this.props.isAuthenticated) {
+            this.setState({purchasing: true})
+        } else {
+            console.log("i set redirect path now")
+            this.props.onSetAuthRedirectPath("/checkout")
+            this.props.history.push("/auth")
+        }
     }
 
     purchaseCancelHandler = () => {
@@ -35,53 +41,8 @@ class BurgerBuilder extends Component {
     purchaseContinueHandler = () => {
         this.setState({loading: true})
         this.props.onInitPurchase()
-        this.props.history.push("/checkout/");
-        // QUERY PARAMETERS: just keeping the code for future reference - however with redux it
-        // is not needed anymore
-
-        // const queryParams = []
-        // for (let i in this.props.ingredients) {
-        //     queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.props.ingredients[i]))
-        // }
-        // queryParams.push("price=" + this.props.totalPrice)
-        // const queryString = queryParams.join("&")
-        // this.props.history.push({
-        //     pathname: "/checkout/",
-        //     search: '?' + queryString
-        // });
-
-        // see componentDidMount in Checkout for how to use
+        this.props.history.push("/checkout")
     }
-    // addIngredientHandler = (type) => {
-    //     const updatedIngredientCount = this.state.ingredients[type] + 1;
-    //     const updatedIngredients = {...this.state.ingredients};
-    //
-    //     updatedIngredients[type] = updatedIngredientCount;
-    //     const updatedPrice = this.state.totalPrice + INGREDIENT_PRICE[type]
-    //
-    //     this.setState({
-    //         ingredients: updatedIngredients,
-    //         totalPrice: updatedPrice
-    //     })
-    //     this.updatePurchasable(updatedIngredients)
-    // }
-
-    // removeIngredientHandler = (type) => {
-    //     const updatedIngredientCount = this.state.ingredients[type] - 1;
-    //     if (updatedIngredientCount < 0) {
-    //         return
-    //     }
-    //     const updatedIngredients = {...this.state.ingredients};
-    //
-    //     updatedIngredients[type] = updatedIngredientCount;
-    //     const updatedPrice = this.state.totalPrice - INGREDIENT_PRICE[type]
-    //
-    //     this.setState({
-    //         ingredients: updatedIngredients,
-    //         totalPrice: updatedPrice
-    //     })
-    //     this.updatePurchasable(updatedIngredients)
-    // }
 
     render() {
         const shouldBeDisabled = {...this.props.ingredients}
@@ -103,6 +64,7 @@ class BurgerBuilder extends Component {
                         shouldBeDisabled={shouldBeDisabled}
                         purchasable={this.updatePurchasable(this.props.ingredients)}
                         purchasing={this.purchaseHandler}
+                        isAuthenticated={this.props.isAuthenticated}
                     />
                 </React.Fragment>
             )
@@ -113,10 +75,6 @@ class BurgerBuilder extends Component {
                 totalPrice={this.props.totalPrice}>
             </OrderSummary>
         }
-
-        // if (this.state.loading) {
-        //     orderSummary = <Spinner/>
-        // }
 
         return (
             <React.Fragment>
@@ -133,7 +91,8 @@ const mapStateToProps = state => {
     return {
         ingredients: state.burgerBuilder.ingredients,
         totalPrice: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     }
 }
 
@@ -142,7 +101,8 @@ const mapDispatchToProps = dispatch => {
         onAddIngredient: (ingredient) => dispatch(actions.addIngredient(ingredient)),
         onRemoveIngredient: (ingredient) => dispatch(actions.removeIngredient(ingredient)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onInitPurchase: () => dispatch(actions.purchaseBurgerInit())
+        onInitPurchase: () => dispatch(actions.purchaseBurgerInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
     }
 }
 

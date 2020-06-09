@@ -1,9 +1,7 @@
 import React, {Component} from "react";
-import {Route, Switch} from "react-router-dom"
+import {Route, Switch, Redirect} from "react-router-dom"
 import {BrowserRouter} from "react-router-dom";
-import {Provider} from "react-redux"
-import {createStore, applyMiddleware, compose, combineReducers} from "redux"
-import thunk from "redux-thunk"
+import {connect} from "react-redux"
 
 
 import Layout from "./containers/Layout/Layout";
@@ -11,39 +9,57 @@ import BurgerBuilder from "./containers/BurgerBuilder";
 import Checkout from "./containers/Checkout/Checkout";
 import Orders from "./containers/Orders/Orders";
 import Auth from "./containers/Auth/Auth"
-import burgerBuilderReducer from "./store/reducers/burgerBuilderReducer"
-import orderReducer from "./store/reducers/orderReducer"
-import authReducer from "./store/reducers/authReducer";
+import Logout from "./containers/Auth/Logout"
+
+import * as actions from "./store/actions/actions"
 
 
 class App extends Component {
 
-    checkoutPath = "/checkout"
-    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-    rootReducer = combineReducers(({
-        burgerBuilder: burgerBuilderReducer,
-        order: orderReducer,
-        auth: authReducer
-    }))
+    componentDidMount() {
+        this.props.tryAutoLogin()
+    }
 
     render() {
+
+        let routes = <Switch>
+            <Route path={"/auth"} component={Auth}/>
+            <Route path={"/"} exact component={BurgerBuilder}/>
+            <Redirect to={"/"}/>
+        </Switch>
+
+        if (this.props.isAuthenticated) {
+            routes =
+                <Switch>
+                    <Route path={"/checkout"} component={Checkout}/>
+                    <Route path={"/orders"} component={Orders}/>
+                    <Route path={"/logout"} component={Logout}/>
+                    <Route path={"/"} exact component={BurgerBuilder}/>
+                    <Redirect to={"/"}/>
+                </Switch>
+        }
+
         return (
-            <Provider
-                store={createStore(this.rootReducer, this.composeEnhancers(applyMiddleware(thunk)))}>
-                <BrowserRouter>
-                    <Layout>
-                        <Switch>
-                            <Route path={this.checkoutPath} component={Checkout}/>
-                            <Route path={"/orders"} component={Orders}/>
-                            <Route path={"/auth"} component={Auth}/>
-                            <Route path={"/"} component={BurgerBuilder}/>
-                        </Switch>
-                    </Layout>
-                </BrowserRouter>
-            </Provider>
+
+            <BrowserRouter>
+                <Layout>
+                    {routes}
+                </Layout>
+            </BrowserRouter>
         );
     }
 }
 
-export default App;
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        tryAutoLogin: () => dispatch(actions.checkAuthState())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

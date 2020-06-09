@@ -3,7 +3,6 @@ import styles from "./Burger.module.css";
 import Ingredient from "./Ingredient";
 
 const burger = (props) => {
-    console.log(props.ingredients)
     let transformedIngredients = Object.keys(props.ingredients).map(
         (ingredientKey) => {
             const times = props.ingredients[ingredientKey];

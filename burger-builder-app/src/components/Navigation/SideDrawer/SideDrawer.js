@@ -12,7 +12,7 @@ const sideDrawer = (props) => {
             <div className={ [styles.SideDrawer, attachedClasses].join(' ') }>
                 <Logo height={"11%"}/> {/* One way to do it - see in Toolbar for another way */}
                 <nav>
-                    <NavigationItems/>
+                    <NavigationItems isAuthenticated={props.isAuthenticated}/>
                 </nav>
             </div>
         </React.Fragment>
