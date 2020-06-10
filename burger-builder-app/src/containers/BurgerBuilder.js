@@ -10,11 +10,11 @@ import OrderSummary from "../components/OrderSummary/OrderSummary"
 import Spinner from "../components/UI/Spinner/Spinner"
 import withErrorHandler from "../hoc/withErrorHandler";
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { purchasing: false }
+        this.state = {purchasing: false}
     }
 
     componentDidMount() {
@@ -22,7 +22,9 @@ class BurgerBuilder extends Component {
     }
 
     updatePurchasable(ingredients) {
-        return (Object.values(ingredients).reduce((acc, element) => acc + element, 0) > 0)
+        if (ingredients) {
+            return (Object.values(ingredients).reduce((acc, element) => acc + element, 0) > 0)
+        }
     }
 
     purchaseHandler = () => {

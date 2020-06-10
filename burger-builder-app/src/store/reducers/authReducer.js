@@ -29,7 +29,7 @@ const setAuthRedirectPath = (oldState, action) =>
         authRedirect: action.path
     })
 
-const authReducer = (oldState = initialState, action) => {
+export const authReducer = (oldState = initialState, action) => {
     switch (action.type) {
         case actionTypes.AUTH_START:
             return authStart(oldState)
