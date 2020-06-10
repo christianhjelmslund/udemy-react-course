@@ -33,7 +33,6 @@ class Checkout extends Component {
     }
 
     render() {
-        console.log("purchased prop: ", this.props.purchased)
         const redirect = <Redirect to={"/"}/>
         let summary = redirect
 

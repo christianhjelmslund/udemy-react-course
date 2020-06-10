@@ -7,7 +7,7 @@ import styles from "./CheckoutSummary.module.css"
 const checkoutSummary = (props) => {
     return (
         <div style={{width: '100%', margin: 'auto'}} className={styles.CheckoutSummary}>
-            <h1>Continue to checkout 😎</h1>
+            <h1>Continue to checkout <span role="img" aria-label="sheep">😎</span></h1>
             <Burger ingredients={props.ingredients}> </Burger>
             <SpecialButton btnType={"Danger"}
                            clicked={props.checkoutCancelled}>CANCEL</SpecialButton>

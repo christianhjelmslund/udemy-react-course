@@ -12,8 +12,9 @@ import withErrorHandler from "../hoc/withErrorHandler";
 
 class BurgerBuilder extends Component {
 
-    state = {
-        purchasing: false,
+    constructor(props) {
+        super(props);
+        this.state = { purchasing: false }
     }
 
     componentDidMount() {
@@ -28,7 +29,6 @@ class BurgerBuilder extends Component {
         if (this.props.isAuthenticated) {
             this.setState({purchasing: true})
         } else {
-            console.log("i set redirect path now")
             this.props.onSetAuthRedirectPath("/checkout")
             this.props.history.push("/auth")
         }

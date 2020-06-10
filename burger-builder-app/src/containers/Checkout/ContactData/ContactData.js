@@ -6,6 +6,7 @@ import SpecialButton from "../../../components/UI/Button/Button"
 import Input from "../../../components/UI/Input/Input"
 import withErrorHandler from "../../../hoc/withErrorHandler";
 import * as actions from "../../../store/actions/actions"
+import {updateObject} from "../../../shared/utility"
 
 import styles from "./ContactData.module.css"
 
@@ -75,23 +76,27 @@ class ContactData extends Component {
     }
 
     inputChangedHandler = (event, inputId) => {
-        const updatedOrderData = {...this.state.orderForm} // this would not be cloned deeply,
+        // const updatedOrderData = {...this.state.orderForm} // this would not be cloned deeply,
         // because they are nested - however, we only need value
-        const updatedFormElement = {...updatedOrderData[inputId]}
-        updatedFormElement.value = event.target.value
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation)
-        updatedFormElement.touched = true
-        updatedOrderData[inputId] = updatedFormElement
+        // const updatedFormElement = {...updatedOrderData[inputId]}
+        const updatedFormElement = updateObject(this.state.orderForm[inputId], {
+            value: event.target.value,
+            valid: this.checkValidity(event.target.value, this.state.orderForm[inputId].validation),
+            touched: true
+        })
+
+        const updatedOrderData = updateObject(this.state.orderForm, {
+            [inputId]: updatedFormElement
+        })
 
         let formIsValid = true
-        for(let inputId in updatedOrderData) {
+        for (let inputId in updatedOrderData) {
             if (!updatedOrderData[inputId].valid) {
-                console.log(updatedOrderData[inputId])
                 formIsValid = false
                 break
             }
         }
-        this.setState({orderForm: updatedOrderData, formIsValid: formIsValid })
+        this.setState({orderForm: updatedOrderData, formIsValid: formIsValid})
     }
 
     render() {
@@ -117,7 +122,8 @@ class ContactData extends Component {
                                            shouldValidate={formElement.config.validation}/>)
                         }
                     )}
-                    <SpecialButton btnType={"Success"} disabled={!this.state.formIsValid}>ORDER</SpecialButton>
+                    <SpecialButton btnType={"Success"}
+                                   disabled={!this.state.formIsValid}>ORDER</SpecialButton>
                 </form>
             </div>
         )

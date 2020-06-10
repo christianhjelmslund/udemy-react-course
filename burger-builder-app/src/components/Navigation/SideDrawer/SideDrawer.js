@@ -8,8 +8,8 @@ const sideDrawer = (props) => {
     const attachedClasses = props.open ? styles.Open : styles.Close
     return (
         <React.Fragment>
-            <Backdrop show={props.open} clicked={props.closed}/>
-            <div className={ [styles.SideDrawer, attachedClasses].join(' ') }>
+            <Backdrop show={props.open} clicked={props.closed} />
+            <div className={ [styles.SideDrawer, attachedClasses].join(' ') } onClick={props.closed}>
                 <Logo height={"11%"}/> {/* One way to do it - see in Toolbar for another way */}
                 <nav>
                     <NavigationItems isAuthenticated={props.isAuthenticated}/>

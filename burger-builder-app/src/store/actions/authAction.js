@@ -51,12 +51,10 @@ export const checkAuthState = () => {
     return dispatch => {
         const token = localStorage.getItem("token")
         if (!token) {
-            console.log("here")
             dispatch(logout())
         } else {
             const expirationDate = new Date(localStorage.getItem("expirationDate"))
             if (new Date() > expirationDate) {
-                console.log("here1")
                 dispatch(logout())
             } else {
                 dispatch(authSuccess(token, localStorage.getItem("userId")))
